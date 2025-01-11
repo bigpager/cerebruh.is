@@ -1,0 +1,13 @@
+{
+  "name": "cerebruh.is",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "build": "mkdir -p build && cp -r static/* build/",
+    "test": "node test/index.js",
+    "pretest": "npm run build"
+  },
+  "devDependencies": {
+    "puppeteer": "^24.0.0"
+  }
+}
