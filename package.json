@@ -7,12 +7,15 @@
     "build": "astro build",
     "preview": "astro preview",
     "test": "jest",
-    "test:watch": "jest --watch"
+    "test:watch": "jest --watch",
+    "deploy": "npm run test && npm run build && wrangler pages deploy dist --project-name cerebruh",
+    "pages:dev": "wrangler pages dev dist --port 8788"
   },
   "dependencies": {
     "@astrojs/react": "^3.0.9",
+    "@astrojs/starlight": "^0.31.0",
     "@astrojs/tailwind": "^5.1.0",
-    "astro": "^4.3.5",
+    "astro": "^5.1.7",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },
@@ -28,8 +31,8 @@
     "jest-environment-jsdom": "^29.7.0",
     "postcss": "^8.4.35",
     "tailwindcss": "^3.4.1",
-    "typescript": "^5.3.3",
     "ts-jest": "^29.1.2",
+    "typescript": "^5.3.3",
     "wrangler": "^3.28.1"
   }
 }
