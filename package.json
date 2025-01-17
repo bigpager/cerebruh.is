@@ -3,27 +3,30 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "astro dev",
-    "build": "astro build",
+    "dev": "npm run generate-catalog && astro dev",
+    "build": "npm run generate-catalog && astro build",
     "preview": "astro preview",
     "test": "jest",
     "test:watch": "jest --watch",
-    "deploy": "npm run test && npm run build && wrangler pages deploy dist --project-name cerebruh",
-    "pages:dev": "wrangler pages dev dist --port 8788"
+    "generate-catalog": "ts-node scripts/generate-mcp-catalog.ts"
   },
   "dependencies": {
     "@astrojs/react": "^3.0.9",
     "@astrojs/starlight": "^0.31.0",
     "@astrojs/tailwind": "^5.1.0",
     "astro": "^5.1.7",
+    "fastmcp": "*",
+    "@modelcontextprotocol/sdk": "*",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "zod": "^3.22.4"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20240208.0",
     "@testing-library/jest-dom": "^6.4.2",
     "@testing-library/react": "^14.2.1",
     "@types/jest": "^29.5.12",
+    "@types/node": "^20.11.0",
     "@types/react": "^18.2.55",
     "@types/react-dom": "^18.2.18",
     "autoprefixer": "^10.4.17",
@@ -33,6 +36,7 @@
     "tailwindcss": "^3.4.1",
     "ts-jest": "^29.1.2",
     "typescript": "^5.3.3",
+    "ts-node": "^10.9.2",
     "wrangler": "^3.28.1"
   }
 }

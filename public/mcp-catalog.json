@@ -1,0 +1,12 @@
+{
+  "tools": [
+    {
+      "name": "Sample Tool",
+      "description": "A sample MCP tool for testing the catalog system",
+      "version": "1.0.0",
+      "id": "sample-tool",
+      "path": "/mcp/tools/sample-tool"
+    }
+  ],
+  "generated": "2025-01-17T15:45:46.036Z"
+}

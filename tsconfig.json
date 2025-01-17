@@ -17,8 +17,8 @@
     "paths": {
       "@/*": ["src/*"]
     },
-    "types": ["jest", "@testing-library/jest-dom"]
+    "types": ["node", "jest", "@testing-library/jest-dom"]
   },
-  "include": ["**/*.ts", "**/*.tsx", "test/**/*.ts", "test/**/*.tsx"],
+  "include": ["**/*.ts", "**/*.tsx", "test/**/*.ts", "test/**/*.tsx", "scripts/**/*.ts"],
   "exclude": ["node_modules"]
 }

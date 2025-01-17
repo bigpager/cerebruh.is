@@ -1,0 +1,21 @@
+---
+import { useStarlightBrowserTheme } from '@astrojs/starlight/runtime';
+import MCPToolsList from '../../components/MCPToolsList.jsx';
+---
+
+<div class="sl-container">
+  <main class="sl-markdown-content">
+    <h1>MCP Tools</h1>
+    <p>Browse and discover available MCP tools in your Cerebruh instance.</p>
+    
+    <MCPToolsList client:load />
+  </main>
+</div>
+
+<style>
+  .sl-container {
+    max-width: 90rem;
+    margin: 0 auto;
+    padding: 1rem;
+  }
+</style>
