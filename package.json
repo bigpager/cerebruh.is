@@ -2,13 +2,14 @@
   "name": "cerebruh",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "scripts": {
-    "dev": "npm run generate-catalog && astro dev",
-    "build": "npm run generate-catalog && astro build",
+    "dev": "astro dev",
+    "build": "astro build",
     "preview": "astro preview",
     "test": "jest",
     "test:watch": "jest --watch",
-    "generate-catalog": "ts-node scripts/generate-mcp-catalog.ts"
+    "mcp": "node --import 'data:text/javascript,import { register } from \"node:module\"; import { pathToFileURL } from \"node:url\"; register(\"ts-node/esm\", pathToFileURL(\"./\"));' src/mcp/server.ts"
   },
   "dependencies": {
     "@astrojs/react": "^3.0.9",

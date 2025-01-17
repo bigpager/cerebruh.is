@@ -1,10 +1,6 @@
-import { FastMCP } from 'fastmcp';
-import { memosTools } from './memos';
-import { linkwardenTools } from './linkwarden';
-import { n8nTools } from './n8n';
+import type { FastMCP } from "fastmcp";
 
-export const addCoreTools = (server: FastMCP) => {
-  memosTools(server);
-  linkwardenTools(server);
-  n8nTools(server);
-};
+export async function addCoreTools(server: FastMCP) {
+  // Core tools will be added here
+  // For now, this is a placeholder
+}

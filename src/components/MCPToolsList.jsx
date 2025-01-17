@@ -5,7 +5,9 @@ const HEADERS = [
   "My Bot Friend -- user",
   "rm -rf .cache",
   "My Notes",
-  "My Journal"
+  "My Journal",
+  "Brain2",
+  "Brain++"
 ];
 
 export default function MCPToolsList() {
