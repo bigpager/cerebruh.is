@@ -1,43 +1,25 @@
 {
   "name": "cerebruh",
   "version": "0.1.0",
-  "private": true,
-  "type": "module",
   "scripts": {
-    "dev": "astro dev",
-    "build": "astro build",
-    "preview": "astro preview",
+    "start": "concurrently \"npm:start:*\"",
+    "start:blocko": "cd io/blocko && npm start",
+    "start:mcp": "cd io/mcp && npm start",
+    "dev": "concurrently \"npm:dev:*\"",
+    "dev:blocko": "cd io/blocko && npm run dev",
+    "dev:mcp": "cd io/mcp && npm run dev",
     "test": "jest",
-    "test:watch": "jest --watch",
-    "mcp": "node --import 'data:text/javascript,import { register } from \"node:module\"; import { pathToFileURL } from \"node:url\"; register(\"ts-node/esm\", pathToFileURL(\"./\"));' src/mcp/server.ts"
+    "build": "npm run build:blocko && npm run build:mcp",
+    "build:blocko": "cd io/blocko && npm run build",
+    "build:mcp": "cd io/mcp && npm run build"
   },
   "dependencies": {
-    "@astrojs/react": "^3.0.9",
-    "@astrojs/starlight": "^0.31.0",
-    "@astrojs/tailwind": "^5.1.0",
-    "astro": "^5.1.7",
-    "fastmcp": "*",
-    "@modelcontextprotocol/sdk": "*",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "zod": "^3.22.4"
+    "concurrently": "^8.2.2"
   },
   "devDependencies": {
-    "@cloudflare/workers-types": "^4.20240208.0",
-    "@testing-library/jest-dom": "^6.4.2",
-    "@testing-library/react": "^14.2.1",
     "@types/jest": "^29.5.12",
-    "@types/node": "^20.11.0",
-    "@types/react": "^18.2.55",
-    "@types/react-dom": "^18.2.18",
-    "autoprefixer": "^10.4.17",
     "jest": "^29.7.0",
-    "jest-environment-jsdom": "^29.7.0",
-    "postcss": "^8.4.35",
-    "tailwindcss": "^3.4.1",
     "ts-jest": "^29.1.2",
-    "typescript": "^5.3.3",
-    "ts-node": "^10.9.2",
-    "wrangler": "^3.28.1"
+    "typescript": "^5.3.3"
   }
 }

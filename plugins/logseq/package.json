@@ -1,0 +1,23 @@
+{
+  "name": "@cerebruh/logseq-plugin",
+  "version": "0.1.0",
+  "main": "dist/index.js",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "test": "jest"
+  },
+  "dependencies": {
+    "@logseq/libs": "^0.0.17"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.16",
+    "typescript": "^5.3.3",
+    "vite": "^5.0.12"
+  },
+  "logseq": {
+    "id": "cerebruh-mcp",
+    "title": "Cerebruh MCP",
+    "icon": "icon.png"
+  }
+}

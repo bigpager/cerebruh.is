@@ -8,37 +8,31 @@ WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm ci
 
-# Rebuild the source code only when needed
+# Build the app
 FROM base AS builder
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
-# Create empty public directory if it doesn't exist
-RUN mkdir -p public
+# Build the Astro site
 RUN npm run build
 
-# Production image, copy all the files and run next
+# Production image
 FROM base AS runner
 WORKDIR /app
 
 ENV NODE_ENV=production
+ENV HOST=0.0.0.0
+ENV PORT=3000
 
 RUN addgroup --system --gid 1001 nodejs
-RUN adduser --system --uid 1001 nextjs
+RUN adduser --system --uid 1001 astro
 
-# Create necessary directories
-RUN mkdir -p public .next
-RUN chown nextjs:nodejs .next
+# Copy built assets
+COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/package.json ./package.json
 
-# Copy necessary files
-COPY --from=builder /app/public ./public
-COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
-COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+USER astro
 
-USER nextjs
-
-ENV PORT 3000
-ENV HOSTNAME "0.0.0.0"
-
-CMD ["node", "server.js"]
+CMD ["npm", "run", "preview", "--", "--host", "0.0.0.0"]

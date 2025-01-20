@@ -14,13 +14,6 @@ x-logging: &default-logging
     options:
       max-size: "10m"
 
-# Base healthcheck configuration
-x-healthcheck-base: &healthcheck-base
-  interval: 30s
-  timeout: 10s
-  retries: 3
-  start_period: 60s
-
 # Common configurations
 x-service-base: &service-defaults
   <<: [*base-service, *default-logging]
@@ -29,22 +22,14 @@ x-service-base: &service-defaults
   volumes:
     - secrets:/secrets:ro
 
-services:
-  next-app:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: cerebruh-next
-    ports:
-      - "3000:3000"
-    environment:
-      - NODE_ENV=production
-    networks:
-      - cerebruh
-    healthcheck:
-      <<: *healthcheck-base
-      test: ["CMD", "curl", "-f", "http://localhost:3000/"]
+# Base healthcheck configuration
+x-healthcheck-base: &healthcheck-base
+  interval: 30s
+  timeout: 10s
+  retries: 3
+  start_period: 60s
 
+services:
   bws-init:
     <<: *default-logging
     build:
@@ -91,140 +76,34 @@ services:
     networks:
       - cerebruh
     healthcheck:
-      <<: *healthcheck-base
       test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
     depends_on:
       bws-init:
         condition: service_completed_successfully
 
-  memos:
-    <<: *service-defaults
-    image: neosmemo/memos:latest
-    container_name: memos
-    volumes:
-      - ./data/for/memos:/var/opt/memos
-    environment:
-      - MEMOS_MODE=prod
-      - MEMOS_PORT=5230
-      - MEMOS_DATA=/var/opt/memos
-    healthcheck:
-      <<: *healthcheck-base
-      test: [ "CMD", "curl", "-f", "http://localhost:5230/health" ]
-    networks:
-      - cerebruh
-    depends_on:
-      bws-init:
-        condition: service_completed_successfully
-
-  blocko:
+  astro:
     <<: *service-defaults
     build:
-      context: ./io/blocko
+      context: .
       dockerfile: Dockerfile
+    container_name: cerebruh-web
     environment:
       <<: *common-env
-      PORT: 3001
-      REDIS_URL: redis://redis:6379
+      HOST: 0.0.0.0
+      PORT: 3000
     volumes:
-      - ./io/blocko/src:/app/src
-      - /app/node_modules
-      - secrets:/secrets:ro
+      - ./src:/app/src
+      - ./public:/app/public
     healthcheck:
       <<: *healthcheck-base
-      test: [ "CMD", "curl", "-f", "http://localhost:3001/health" ]
-    networks:
-      - cerebruh
-    depends_on:
-      redis:
-        condition: service_healthy
-      bws-init:
-        condition: service_completed_successfully
-
-  n8n:
-    <<: *service-defaults
-    image: docker.n8n.io/n8nio/n8n
-    container_name: n8n
-    restart: unless-stopped
-    environment:
-      N8N_HOST: n8n.cerebruh.is
-      N8N_PROTOCOL: https
-      N8N_PORT: 5678
-      NODE_ENV: production
-      WEBHOOK_URL: https://n8n.cerebruh.is/
-      GENERIC_TIMEZONE: ${GENERIC_TIMEZONE:-UTC}
-      N8N_EDITOR_BASE_URL: https://n8n.cerebruh.is
-    volumes:
-      - ./data/for/n8n:/home/node/.n8n
-    healthcheck:
-      <<: *healthcheck-base
-      test: [ "CMD", "wget", "--spider", "http://localhost:5678/healthz" ]
+      test: [ "CMD", "curl", "-f", "http://localhost:3000/health" ]
     networks:
       - cerebruh
     depends_on:
       - bws-init
-
-  linkwarden:
-    <<: *service-defaults
-    image: ghcr.io/linkwarden/linkwarden:latest
-    container_name: linkwarden
-    environment:
-      <<: *common-env
-      NEXTAUTH_URL: https://links.${DOMAIN_NAME}
-    volumes:
-      - ./data/for/linkwarden:/data/linkwarden
-      - secrets:/secrets:ro
-    command: |
-      sh -c '
-        while [ ! -f /secrets/.env ]; do
-          echo "Waiting for secrets file..."
-          sleep 1
-        done
-      
-        export DB_PASS=$$(grep CBRUH_POSTGRES_PASSWORD /secrets/.env | cut -d= -f2)
-        export NEXTAUTH_SECRET=$$(grep CBRUH_LINKWARDEN_SECRET /secrets/.env | cut -d= -f2)
-      
-        echo "=== Environment Verification ==="
-        echo "NEXTAUTH_URL = $${NEXTAUTH_URL}"
-        echo "NEXTAUTH_SECRET length = $${#NEXTAUTH_SECRET}"
-        echo "DB_PASS length = $${#DB_PASS}"
-      
-        if [ -z "$$NEXTAUTH_SECRET" ]; then
-          echo "ERROR: NEXTAUTH_SECRET is empty!"
-          exit 1
-        fi
-      
-        export DATABASE_URL="postgresql://postgres:$$DB_PASS@postgres:5432/linkwarden?schema=public"
-      
-        yarn prisma migrate deploy && yarn start
-      '
-    healthcheck:
-      <<: *healthcheck-base
-      test: [ "CMD-SHELL", "curl -f http://localhost:3000/health || exit 1" ]
-    networks:
-      - cerebruh
-    depends_on:
-      postgres:
-        condition: service_healthy
-      bws-init:
-        condition: service_completed_successfully
-
-  homepage:
-    image: ghcr.io/gethomepage/homepage:latest
-    container_name: homepage
-    ports:
-      - "3001:3000"  # Changed from 3000:3000 to avoid conflict with next-app
-    networks:
-      - cerebruh
-    volumes:
-      - ./config/homepage:/app/config
-      - /var/run/docker.sock:/var/run/docker.sock:ro
-    environment:
-      - DOCKER_HOST=unix:///var/run/docker.sock
-    depends_on:
-      redis:
-        condition: service_healthy
-      bws-init:
-        condition: service_completed_successfully
 
   cloudflared:
     image: cloudflare/cloudflared:latest
@@ -236,10 +115,7 @@ services:
     networks:
       - cerebruh
     depends_on:
-      - next-app
-      - linkwarden
-      - homepage
-      - memos
+      - astro
 
 networks:
   cerebruh:

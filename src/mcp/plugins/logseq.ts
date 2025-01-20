@@ -1,10 +1,10 @@
 import { z } from "zod";
 import type { FastMCP } from "fastmcp";
 
-export async function addMemosPlugin(server: FastMCP) {
+export async function addLogseqPlugin(server: FastMCP) {
   server.addTool({
-    name: "memos",
-    description: "Interact with Memos service",
+    name: "logseq",
+    description: "Interact with Logseq service",
     parameters: z.object({
       action: z.enum(["create", "read", "update", "delete"]),
       content: z.string().optional(),
