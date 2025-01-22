@@ -1,23 +1,31 @@
 {
-  "name": "@cerebruh/logseq-plugin",
+  "name": "cerebruh-mcp",
   "version": "0.1.0",
-  "main": "dist/index.js",
+  "description": "Cerebruh MCP Plugin for Logseq",
+  "main": "index.js",
   "scripts": {
-    "dev": "vite",
-    "build": "tsc && vite build",
-    "test": "jest"
+    "dev": "vite dev",
+    "build": "vite build && cp package.json icon.svg dist/",
+    "test": "jest",
+    "clean": "rm -rf dist"
   },
   "dependencies": {
-    "@logseq/libs": "^0.0.17"
+    "@logseq/libs": "^0.0.17",
+    "lodash-es": "^4.17.21"
   },
   "devDependencies": {
+    "@types/lodash-es": "^4.17.12",
     "@types/node": "^20.11.16",
     "typescript": "^5.3.3",
-    "vite": "^5.0.12"
+    "vite": "^5.0.12",
+    "jest": "^29.7.0",
+    "@types/jest": "^29.5.12",
+    "ts-jest": "^29.1.2"
   },
   "logseq": {
     "id": "cerebruh-mcp",
+    "icon": "icon.svg",
     "title": "Cerebruh MCP",
-    "icon": "icon.png"
+    "description": "Model Context Protocol integration for Logseq"
   }
 }
